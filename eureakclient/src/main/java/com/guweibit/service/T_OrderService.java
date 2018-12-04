@@ -1,10 +1,8 @@
-package com.guweibit.mapper;
+package com.guweibit.service;
 
 import com.guweibit.entity.T_Order;
-import org.springframework.stereotype.Component;
 
-@Component
-public interface T_OrderMapper {
+public interface T_OrderService {
     int deleteByPrimaryKey(String id);
 
     int insert(T_Order record);

@@ -1,7 +1,7 @@
 package com.guweibit.entity;
 
 public class T_Order {
-    private Integer id;
+    private String id;
 
     private String userId;
 
@@ -9,11 +9,11 @@ public class T_Order {
 
     private String payStatus;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

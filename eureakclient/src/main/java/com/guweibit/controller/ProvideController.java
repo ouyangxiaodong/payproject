@@ -24,6 +24,11 @@ public class ProvideController {
         return "/pay";
     }
 
+    /**
+     *  进入支付宝的支付页面
+     * @param map
+     * @return
+     */
     @RequestMapping("/demo")
     public String demoHtml(HashMap<String, Object> map) {
         return "/demo";
