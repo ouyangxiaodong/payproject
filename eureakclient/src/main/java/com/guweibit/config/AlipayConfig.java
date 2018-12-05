@@ -14,10 +14,10 @@ public class AlipayConfig {
     public static String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxBQZwRvlvGyIdMkloP7CqLxonzYYiNxO7PkkIUiR6dJAqho7AaoJQv7dcflUkeLbo4yM2h8srxvAOOvh/mmSwHT65mk57P4mna4+ECTCjdZgdGNSzf8mz2gERIl04000XVZLe817wTanicWtbzR6JcG2Zd2ha6EWQLc8q0F/8qD3ZJJwpqFgF8Yh5C3b6V1tniNQqdhd/k2NrkSOCk1aAcjROhaZa+NXq641J+cmOu4kZwBoNk5h36sgeB3kb6bI2FcUaYDuEGgXUE5ajYKc3L8DhtcelaOcUIuX/2KNpMxDOIm33qdON+ZCEvgV6ddlQapwVigi1mlQAAFCKa1NEQIDAQAB";
 
     // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-    public static String notify_url = "http://4yz8xr.natappfree.cc/notifyUrl";
+    public static String notify_url = "http://se95mr.natappfree.cc/notifyUrl";
 
     // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-    public static String return_url = "http://4yz8xr.natappfree.cc/returnUrl";
+    public static String return_url = "http://se95mr.natappfree.cc/returnUrl";
     // 签名方式
     public static String sign_type = "RSA2";
     // 字符编码格式

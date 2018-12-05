@@ -34,5 +34,25 @@ public class ProvideController {
         return "/demo";
     }
 
+    /**
+     * 进入商品显示页面
+     * @param map
+     * @return
+     */
+    @RequestMapping("/shop")
+    public String shopHtml(HashMap<String, Object> map) {
+        return "/shop";
+    }
+    /**
+     * 进入支付成功页面
+     * @param map
+     * @return
+     */
+    @RequestMapping("/success")
+    public String ssuccessHtml(HashMap<String, Object> map) {
+        return "/success";
+    }
+
+
 
 }

@@ -6,8 +6,9 @@ import com.alipay.api.request.*;
 import com.guweibit.config.AlipayConfig;
 
 import com.guweibit.entity.T_Order;
-import com.guweibit.mapper.UserMapper;
 import com.guweibit.service.T_OrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -25,6 +26,10 @@ import java.util.Map;
  */
 @Controller
 public class AlipayController {
+
+
+    private Logger logger = LoggerFactory.getLogger(AlipayController.class);
+
     @Autowired
     private T_OrderService orderService;
 
@@ -34,7 +39,9 @@ public class AlipayController {
                  @RequestParam(value = "WIDout_trade_no") String WIDout_trade_no,
                  @RequestParam(value = "WIDsubject") String WIDsubject,
                  @RequestParam(value = "WIDtotal_amount") String WIDtotal_amount,
-                 @RequestParam(value = "WIDbody") String WIDbody) throws Exception{
+                 @RequestParam(value = "WIDbody") String WIDbody,
+                 @RequestParam(value = "number") String number,
+                 @RequestParam(value = "payType") String payType) throws Exception{
 //获得初始化的AlipayClient
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
         //设置请求参数
@@ -49,17 +56,27 @@ public class AlipayController {
         String subject = WIDsubject;//new String(request.getParameter("WIDsubject").getBytes("ISO-8859-1"),"UTF-8");
         //商品描述，可空
         String body =WIDbody;// new String(request.getParameter("WIDbody").getBytes("ISO-8859-1"),"UTF-8");
-        T_Order order = new T_Order();
-        order.setId(WIDout_trade_no);
-        order.setPayStatus("0");
-        order.setShopId("1");
-        order.setUserId("1");
-        orderService.insert(order);
         alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
                 + "\"total_amount\":\""+ total_amount +"\","
                 + "\"subject\":\""+ subject +"\","
                 + "\"body\":\""+ body +"\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+
+        //修改订单表中的数据
+
+        T_Order order =orderService.selectByPrimaryKey(out_trade_no);
+        // 修改了 商品的数量需要进行修改数据库中的数据
+        if (!number.equals(order.getNumber())){
+            order.setNumber(number);
+            order.setSumprice(total_amount);
+        }
+        // 修改了支付方式需要
+        if (!payType.equals(order.getPayType())){
+            order.setPayType(payType);
+        }
+        orderService.updateByPrimaryKey(order);
+
+
 
         //若想给BizContent增加其他可选请求参数，以增加自定义超时时间参数timeout_express来举例说明
         //alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
@@ -84,7 +101,6 @@ public class AlipayController {
      * @throws Exception
      */
     @RequestMapping(value = "/returnUrl",method = {RequestMethod.GET,RequestMethod.POST})
-    @ResponseBody
      String returnUrl(HttpServletRequest request, HttpServletResponse response) throws Exception{
          //获取支付宝GET过来反馈信息
          Map<String,String> params = new HashMap<String,String>();
@@ -116,13 +132,15 @@ public class AlipayController {
              String total_amount = new String(request.getParameter("total_amount").getBytes("ISO-8859-1"),"UTF-8");
             // 修改状态
              T_Order order = orderService.selectByPrimaryKey(out_trade_no);
-             order.setPayStatus("1");
-             orderService.updateByPrimaryKey(order);
-             System.out.println("修改状态成功了2");
+             if ("0".equals(order.getPayStatus())){
+                 order.setPayStatus("1");
+                 orderService.updateByPrimaryKey(order);
+             }
+             logger.info("trade_no:"+trade_no+"<br/>out_trade_no:"+out_trade_no+"<br/>total_amount:"+total_amount);
 
-             return "trade_no:"+trade_no+"<br/>out_trade_no:"+out_trade_no+"<br/>total_amount:"+total_amount;
+             return "success";
          }else {
-             return "验签失败";
+             return "fail";
          }
      }
     @RequestMapping(value = "/notifyUrl",method = {RequestMethod.GET,RequestMethod.POST})
@@ -176,9 +194,10 @@ public class AlipayController {
                 //如果有做过处理，不执行商户的业务程序
                 //
                 T_Order order = orderService.selectByPrimaryKey(out_trade_no);
-                order.setPayStatus("1");
-                orderService.updateByPrimaryKey(order);
-                System.out.println("修改状态成功了1");
+                if ("0".equals(order.getPayStatus())){
+                    order.setPayStatus("1");
+                    orderService.updateByPrimaryKey(order);
+                }
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
             }

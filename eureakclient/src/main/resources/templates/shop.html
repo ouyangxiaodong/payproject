@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>商品页面</el-header>
+        <el-container>
+            <el-aside width="400px">
+                <el-row class="tac">
+                    <el-col :span="12">
+                        <el-menu
+                                default-active="1"
+                                class="el-menu-vertical-demo"
+                                @open="handleOpen"
+                                @close="handleClose">
+                            <el-menu-item index="1">
+                                <i class="el-icon-menu"></i>
+                                <span slot="title">所有商品</span>
+                            </el-menu-item>
+                            <el-menu-item index="2">
+                                <i class="el-icon-menu"></i>
+                                <span slot="title">我的订单</span>
+                            </el-menu-item>
+                            <el-menu-item index="4">
+                                <i class="el-icon-setting"></i>
+                                <span slot="title">消息通知</span>
+                            </el-menu-item>
+                        </el-menu>
+                    </el-col>
+                </el-row>
+            </el-aside>
+            <el-main>
+                <el-table
+                    :data="shopData"
+                    style="width: 100%">
+                    <el-table-column
+                            prop="id"
+                            label="编号"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="shopName"
+                            label="名称"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="price"
+                            label="价格">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    @click="handleBuy(scope.$index, scope.row)">购买</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-dialog title="购买" :visible.sync="dialogFormVisible">
+                    <el-form :model="shop">
+                        <el-form-item label="商品名称" :label-width="formLabelWidth">
+                            <el-input v-model="shop.shopName" disabled ></el-input>
+                        </el-form-item>
+                        <el-form-item label="价格" :label-width="formLabelWidth">
+                            <el-input v-model="shop.price" placeholder="0.0" disabled ></el-input>
+                        </el-form-item>
+                        <el-form-item label="数量" :label-width="formLabelWidth">
+                            <template>
+                                <el-input-number v-model="shop.number" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
+                            </template>
+                        </el-form-item>
+                        <el-form-item label="支付方式" :label-width="formLabelWidth">
+                            <template>
+                                <el-radio v-model="shop.payType" label="alipay">支付宝</el-radio>
+                                <el-radio v-model="shop.payType" label="wechat">微信</el-radio>
+                            </template>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="initStatus">取 消</el-button>
+                        <el-button type="primary" @click="doPay">付 款</el-button>
+                    </div>
+                    <!-- 路由出口 -->
+                    <!-- 路由匹配到的组件将渲染在这里 -->
+                    <router-view></router-view>
+                </el-dialog>
+
+            </el-main>
+        </el-container>
+    </el-container>
+
+
+
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script>
+
+    var Foo = { template: '<div>foo</div>' }
+    var Bar = { template: '<div>bar</div>' }
+    const fromHtml = {template :'<div>bar</div>'}
+    const routes = [
+        { path: '/foo', component: Foo },
+        { path: '/bar', component: Bar },
+        { path: '/fromHtml', component: fromHtml }
+    ]
+    var router = new VueRouter({
+        routes // (缩写) 相当于 routes: routes
+    })
+    new Vue({
+        router,
+        el: '#app',
+        data() {
+            return {
+                shopData:[],
+                price:0.0,
+                shop:{
+                    id:"",
+                    shopName:"",
+                    price:"",
+                    number:1,
+                    payType:"alipay",
+                },
+                dialogFormVisible:false,
+                formLabelWidth: '120px',
+                WIDout_trade_no:"", // 订单号
+            }
+        },
+        created(){
+            var that  = this;
+            axios.get('/shop/all/1/10')
+                .then(function (response) {
+                    that.shopData = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        methods: {
+            initStatus(){
+                this.shop.payType = "alipay";
+                return this.dialogFormVisible = false;
+            },
+            handleBuy(index, row) {
+                this.shop = row;
+                this.shop.number = 1;
+                this.shop.payType = "alipay";
+                this.dialogFormVisible = true;
+                this.price = row.price;
+                var vNow = new Date();
+                var sNow = "";
+                sNow += String(vNow.getFullYear());
+                sNow += String(vNow.getMonth() + 1);
+                sNow += String(vNow.getDate());
+                sNow += String(vNow.getHours());
+                sNow += String(vNow.getMinutes());
+                sNow += String(vNow.getSeconds());
+                sNow += String(vNow.getMilliseconds());
+                this.WIDout_trade_no =  sNow;
+                // 创建订单。
+                 this.addorder();
+            },
+            addorder(){
+                // 创建一个订单，
+                console.log(this.shop.payType)
+
+                var T_Order = {
+                    id : this.WIDout_trade_no,
+                    userId : "1",
+                    shopId : this.shop.id,
+                    number: "1",
+                    payStatus : "0", //支付状态
+                    payType:this.shop.payType, // 支付方式
+                    sumprice:this.shop.price
+            }
+                axios({
+                    method: 'post',
+                    url: '/order/articles',
+                    data: JSON.stringify(T_Order),
+                    headers:{
+                        'Content-Type':'application/json'
+                    }
+                }).then(function (response) {
+                    // 打开新的页面进行填充html。
+                  console.log("新增成功")
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
+            handleChange(value) {
+                this.shop.price = parseFloat(this.price)*value;
+            },
+            doPay(){
+                var _this = this;
+                // 点击付款
+                // 需要进行转换
+                var postData = Qs.stringify({
+                    WIDout_trade_no : _this.WIDout_trade_no,
+                    WIDsubject : "测试支付",
+                    WIDtotal_amount : _this.shop.price+"",
+                    WIDbody : "购物",
+                    number:_this.shop.number,
+                    payType:this.shop.payType
+                });
+                axios({
+                    method: 'post',
+                    url: '/goPay',
+                    data: postData
+                }).then(function (response) {
+                    // 打开新的页面进行填充html。
+                    var newwindow = window.open("#","_blank");
+                    newwindow.document.write(response.data);
+                }).catch(function (error) {
+                        console.log(error);
+                    });
+                this.initStatus();
+            },
+            handleDelete(index, row) {
+                console.log(index, row);
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    }).$mount('#app')
+</script>
+</html>
