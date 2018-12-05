@@ -15,6 +15,4 @@
 启动项目之后，访问 http://localhost:8090/shop 进入支付页面。点击付款生成支付二维码，这个时候将创建订单，扫码支付完毕之后 等待跳转页面，将会修改支付订单的状态。 
 
 第一次打开支付页面进行支付时，支付成功页面可能不会自动跳转页面，别慌。
-
-
-
+![image](https://github.com/ouyangxiaodong/payproject/blob/master/eureakclient/src/main/resources/static/2105997987-5bf774f488497_articlex.jpg)
