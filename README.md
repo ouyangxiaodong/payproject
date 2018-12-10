@@ -2,6 +2,8 @@
 
 一个非常粗糙的 支付宝沙箱支付的demo
 使用SpringBoot + MyBatis + Vue + ElementUi 
+新加入的代码中有 kafka  所以启动之前需要启动kafka 并且修改配置文件中的kafka的ip地址
+要不然是启动不了的、
 
  <div style="color:red">注意:付款的时候 微信选项是无效的假的。</div>
  
