@@ -1,6 +1,5 @@
 server:
   port: 8090
-
 spring:
   thymeleaf:
     prefix: classpath:/templates/
@@ -13,7 +12,7 @@ spring:
       filters: stat
       driver-class-name: com.mysql.jdbc.Driver
       #基本属性
-      url: jdbc:mysql://127.0.0.1:3306/paydb?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC
+      url: jdbc:mysql://127.0.0.1:3306/paydb?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
       username: root
       password: 123456
       #配置初始化大小/最小/最大
@@ -33,6 +32,21 @@ spring:
       #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
       pool-prepared-statements: false
       max-pool-prepared-statement-per-connection-size: 20
+  kafka:   ## 卡夫卡配置
+    consumer:
+      bootstrap-servers: 192.168.236.131:9092
+      group-id: anuoapp
+      enable-auto-commit: true
+      auto-commit-interval: 100
+      max-poll-records: 1
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      concurrency: 5
+    producer:
+      bootstrap-servers: 192.168.236.131:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 ## 该配置节点为独立的节点，有很多同学容易将这个配置放在spring的节点下，导致配置无法被识别
 mybatis:
   mapper-locations: classpath:mapping/*.xml  #注意：一定要对应mapper映射xml文件的所在路径

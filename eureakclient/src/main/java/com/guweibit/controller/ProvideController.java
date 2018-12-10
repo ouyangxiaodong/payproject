@@ -53,6 +53,24 @@ public class ProvideController {
         return "/success";
     }
 
+    /**
+     * 进入我的订单页面
+     * @param map
+     * @return
+     */
+    @RequestMapping("/order")
+    public String orderHtml(HashMap<String, Object> map) {
+        return "/order";
+    }
+    /**
+     * 进入indexyem
+     * @param map
+     * @return
+     */
+    @RequestMapping("/index")
+    public String indexHtml(HashMap<String, Object> map) {
+        return "/index";
+    }
 
 
 }

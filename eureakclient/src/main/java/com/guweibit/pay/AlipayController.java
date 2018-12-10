@@ -6,7 +6,7 @@ import com.alipay.api.request.*;
 import com.guweibit.config.AlipayConfig;
 
 import com.guweibit.entity.T_Order;
-import com.guweibit.service.T_OrderService;
+import com.guweibit.kafka.producer.KafkaProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +30,13 @@ public class AlipayController {
 
     private Logger logger = LoggerFactory.getLogger(AlipayController.class);
 
+  /*  @Autowired
+    private T_OrderService orderService;*/
+
+
     @Autowired
-    private T_OrderService orderService;
+    private KafkaProducer kafkaProducer;
+
 
     @PostMapping(value = "/goPay")
     @ResponseBody
@@ -62,21 +67,14 @@ public class AlipayController {
                 + "\"body\":\""+ body +"\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
 
-        //修改订单表中的数据
-
-        T_Order order =orderService.selectByPrimaryKey(out_trade_no);
-        // 修改了 商品的数量需要进行修改数据库中的数据
-        if (!number.equals(order.getNumber())){
-            order.setNumber(number);
-            order.setSumprice(total_amount);
-        }
-        // 修改了支付方式需要
-        if (!payType.equals(order.getPayType())){
-            order.setPayType(payType);
-        }
-        orderService.updateByPrimaryKey(order);
-
-
+        //传递要修改的数据
+        T_Order order = new T_Order();
+        order.setId(out_trade_no);
+        order.setNumber(number);
+        order.setSumprice(total_amount);
+        order.setPayType(payType);
+        // 修改订单数据
+        kafkaProducer.kafkaUpdateOrderSend(order);
 
         //若想给BizContent增加其他可选请求参数，以增加自定义超时时间参数timeout_express来举例说明
         //alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
@@ -130,12 +128,7 @@ public class AlipayController {
 
              //付款金额
              String total_amount = new String(request.getParameter("total_amount").getBytes("ISO-8859-1"),"UTF-8");
-            // 修改状态
-             T_Order order = orderService.selectByPrimaryKey(out_trade_no);
-             if ("0".equals(order.getPayStatus())){
-                 order.setPayStatus("1");
-                 orderService.updateByPrimaryKey(order);
-             }
+
              logger.info("trade_no:"+trade_no+"<br/>out_trade_no:"+out_trade_no+"<br/>total_amount:"+total_amount);
 
              return "success";
@@ -171,6 +164,10 @@ public class AlipayController {
 	3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）
 	4、验证app_id是否为该商户本身。
 	*/
+
+
+
+
         if(signVerified) {//验证成功
             //商户订单号
             String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
@@ -192,12 +189,10 @@ public class AlipayController {
                 //判断该笔订单是否在商户网站中已经做过处理
                 //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
                 //如果有做过处理，不执行商户的业务程序
-                //
-                T_Order order = orderService.selectByPrimaryKey(out_trade_no);
-                if ("0".equals(order.getPayStatus())){
-                    order.setPayStatus("1");
-                    orderService.updateByPrimaryKey(order);
-                }
+                // 修改状态
+                T_Order order = new T_Order();
+                order.setId(out_trade_no);
+                kafkaProducer.kafkaPaySend(order);
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
             }

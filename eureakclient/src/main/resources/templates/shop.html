@@ -16,8 +16,7 @@
                         <el-menu
                                 default-active="1"
                                 class="el-menu-vertical-demo"
-                                @open="handleOpen"
-                                @close="handleClose">
+                                @select="handleOpen">
                             <el-menu-item index="1">
                                 <i class="el-icon-menu"></i>
                                 <span slot="title">所有商品</span>
@@ -27,18 +26,22 @@
                                 <span slot="title">我的订单</span>
                             </el-menu-item>
                             <el-menu-item index="4">
-                                <i class="el-icon-setting"></i>
-                                <span slot="title">消息通知</span>
+                                <el-badge :hidden="messageInfoData.length<=0" :value="messageInfoData.length" class="item">
+                                    <el-button size="small">消息通知</el-button>
+                                </el-badge>
+                                <!--<span slot="title">消息通知</span>-->
                             </el-menu-item>
                         </el-menu>
                     </el-col>
                 </el-row>
             </el-aside>
             <el-main>
+                <template v-if="tabIndex=='1'" >
                 <el-table
                     :data="shopData"
                     style="width: 100%">
                     <el-table-column
+                            :key="1"
                             prop="id"
                             label="编号"
                             width="180">
@@ -86,13 +89,81 @@
                     </div>
                     <!-- 路由出口 -->
                     <!-- 路由匹配到的组件将渲染在这里 -->
-                    <router-view></router-view>
                 </el-dialog>
-
+                </template>
+                <!-- 订单显示 -->
+                <template v-else-if="tabIndex=='2'" >
+                    <el-table
+                            :row-class-name="tableRowClassName"
+                            :key="2"
+                            :data="orderData"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="id"
+                                label="订单编号"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="shopName"
+                                label="商品名称">
+                        </el-table-column>
+                        <el-table-column
+                                prop="sumprice"
+                                label="总价">
+                        </el-table-column>
+                        <el-table-column
+                                prop="payType"
+                                label="支付类型">
+                        </el-table-column>
+                        <el-table-column
+                            prop="payStatus"
+                            label="支付状态">
+                    </el-table-column>
+                        <el-table-column
+                                prop="createTimeVo"
+                                label="创建时间">
+                        </el-table-column>
+                        <el-table-column
+                                prop="payTimeVo"
+                                label="支付时间">
+                        </el-table-column>
+                    </el-table>
+                </template>
+                <template v-else="tabIndex=='3'" >
+                    <el-table
+                            :row-class-name="tableRowClassName"
+                            :key="3"
+                            :data="messageInfoData"
+                            style="width: 100%">
+                        <el-table-column
+                            prop="id"
+                            label="订单编号"
+                            width="180">
+                   </el-table-column>
+                        <el-table-column
+                                prop="payTimeVo"
+                                label="总价">
+                        </el-table-column>
+                        <el-table-column
+                                prop="sumprice"
+                                label="总价">
+                        </el-table-column>
+                        <el-table-column
+                                prop="payType"
+                                label="支付类型">
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        @click="handleEdit(scope.$index, scope.row)">查看消息（消息置为已读）</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
             </el-main>
         </el-container>
     </el-container>
-
 
 
 </div>
@@ -104,24 +175,44 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/qs/6.5.1/qs.min.js"></script>
 <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<style>
+    .el-table .warning-row {
+        background: oldlace;
+    }
+    .el-table .success-row {
+        background: #f0f9eb;
+    }
+    .el-table .red-row {
+        background: #f1cab7;
+    }
+</style>
+
 <script>
 
-    var Foo = { template: '<div>foo</div>' }
-    var Bar = { template: '<div>bar</div>' }
-    const fromHtml = {template :'<div>bar</div>'}
-    const routes = [
-        { path: '/foo', component: Foo },
-        { path: '/bar', component: Bar },
-        { path: '/fromHtml', component: fromHtml }
-    ]
-    var router = new VueRouter({
-        routes // (缩写) 相当于 routes: routes
-    })
     new Vue({
-        router,
         el: '#app',
         data() {
             return {
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1519 弄'
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                }],
+                tabIndex:"1", // tab 菜单下标 从1 开始
+                orderData: [],
+                payData:[],
                 shopData:[],
                 price:0.0,
                 shop:{
@@ -131,10 +222,42 @@
                     number:1,
                     payType:"alipay",
                 },
+                order:{
+                      id:"",
+                    shopName:"",
+                    payStatus:"",
+                    number:"",
+                    payType:"",
+                    sumprice:"",
+                },
                 dialogFormVisible:false,
                 formLabelWidth: '120px',
                 WIDout_trade_no:"", // 订单号
+                messageInfoData:[], // 消息集合
             }
+        },
+        mounted(){
+            var websocket = null;
+            var _this = this;
+            if ("WebSocket" in window) {
+                websocket = new WebSocket("ws://localhost:8090/chatroom");
+            } else {
+                alert("websocket not supported");
+            }
+            websocket.onopen = function () {
+                //_this.setMessageInnerHTML("open");
+                console.log("建立websocket连接")
+            };
+            websocket.onmessage = function (event) {
+                _this.setMessageInnerHTML(event.data);
+            };
+            websocket.onclose = function () {
+             //   _this.setMessageInnerHTML("close");
+                console.log("断开websocket连接")
+            };
+            websocket.onbeforeunload = function () {
+                websocket.close();
+            };
         },
         created(){
             var that  = this;
@@ -145,8 +268,77 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            this.queryData("1");
         },
         methods: {
+      setMessageInnerHTML(message) {
+          console.log(message);
+          if (message != null) {
+              let jsonObj = JSON.parse(message)
+              this.messageInfoData.push(jsonObj)
+              for(var i= 0;i<this.messageInfoData.length;i++){
+                  var item = this.messageInfoData[i];
+                  if (this.messageInfoData[i].payType=="alipay"){
+                      this.messageInfoData[i].payType = "支付宝"
+                  }else if (item.payType=="wechat"){
+                      this.messageInfoData[i].payType = "微信"
+                  }
+                  if (item.payStatus=="0"){
+                      this.messageInfoData[i].payStatus = "待支付"
+                  }else if(item.payStatus=="1"){
+                      response.data[i].payStatus = "已支付"
+                  }else if (item.payStatus=="2") {
+                      this.messageInfoData[i].payStatus = "取消订单"
+                  }
+              }
+          }
+          console.log(this.messageInfoData)
+    },
+    tableRowClassName({row, rowIndex}) {
+                if (row.payStatus == "待支付") {
+                    return 'warning-row';
+                } else if (row.payStatus == "已支付") {
+                    return 'success-row';
+                }
+                return 'red-row';
+        },
+            queryData(tabIndex){
+                var that  = this;
+                if (tabIndex=='1'){
+                    axios.get('/shop/all/1/10')
+                        .then( response => {
+                            this.shopData = response.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                } else if (tabIndex=="2"){
+                    axios.get('/order/all/1/100')
+                        .then(response => {
+                            console.log(response)
+                            for(var i= 0;i<response.data.length;i++){
+                                var item = response.data[i];
+                                if (response.data[i].payType=="alipay"){
+                                    response.data[i].payType = "支付宝"
+                                }else if (item.payType=="wechat"){
+                                    response.data[i].payType = "微信"
+                                }
+                                if (item.payStatus=="0"){
+                                    response.data[i].payStatus = "待支付"
+                                }else if(item.payStatus=="1"){
+                                    response.data[i].payStatus = "已支付"
+                                }else if (item.payStatus=="2") {
+                                    response.data[i].payStatus = "取消订单"
+                                }
+                            }
+                            this.orderData = response.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                } else{
+                }
+            },
             initStatus(){
                 this.shop.payType = "alipay";
                 return this.dialogFormVisible = false;
@@ -225,16 +417,19 @@
                     });
                 this.initStatus();
             },
-            handleDelete(index, row) {
-                console.log(index, row);
-            },
             handleOpen(key, keyPath) {
-                console.log(key, keyPath);
+                this.tabIndex = keyPath;
+                // 查询数据
+                this.queryData(this.tabIndex);
+
             },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            }
+            handleEdit(index, row) {
+                console.log(index, row);
+                // 修改消息状态
+                console.log("修改消息状态")
+                this.messageInfoData.splice(index,1);
+            },
         }
-    }).$mount('#app')
+    })
 </script>
 </html>

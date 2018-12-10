@@ -14,12 +14,9 @@ import java.util.List;
 public class ShopServiceImpl implements ShopService  {
     @Autowired
     private ShopMapper shopMappe;
-
-
     @Override
     public List<Shop> shopAll(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-
         return shopMappe.shopAll();
     }
 }
