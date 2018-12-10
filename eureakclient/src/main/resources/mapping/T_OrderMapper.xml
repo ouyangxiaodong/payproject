@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.guweibit.mapper.T_OrderMapper" >
+  <resultMap id="BaseResultMap" type="com.guweibit.entity.T_Order" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="shop_id" property="shopId" jdbcType="VARCHAR" />
+    <result column="pay_status" property="payStatus" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+    <result column="sumPrice" property="sumprice" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="payTime" property="paytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="BaseResultVOMap" type="com.guweibit.vo.T_OrderVO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="pay_status" property="payStatus" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+    <result column="sumPrice" property="sumprice" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="payTime" property="paytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    id, user_id, shop_id, pay_status, number, pay_type, sumPrice, createDate, payTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_order
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_order
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.guweibit.entity.T_Order" >
+    insert into t_order (id, user_id, shop_id,
+      pay_status, number, pay_type,
+      sumPrice, createDate, payTime
+      )
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{shopId,jdbcType=VARCHAR},
+      #{payStatus,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, #{payType,jdbcType=VARCHAR},
+      #{sumprice,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, #{paytime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.guweibit.entity.T_Order" >
+    insert into t_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="shopId != null" >
+        shop_id,
+      </if>
+      <if test="payStatus != null" >
+        pay_status,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="payType != null" >
+        pay_type,
+      </if>
+      <if test="sumprice != null" >
+        sumPrice,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="paytime != null" >
+        payTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null" >
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="payStatus != null" >
+        #{payStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null" >
+        #{payType,jdbcType=VARCHAR},
+      </if>
+      <if test="sumprice != null" >
+        #{sumprice,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paytime != null" >
+        #{paytime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.guweibit.entity.T_Order" >
+    update t_order
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null" >
+        shop_id = #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="payStatus != null" >
+        pay_status = #{payStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null" >
+        pay_type = #{payType,jdbcType=VARCHAR},
+      </if>
+      <if test="sumprice != null" >
+        sumPrice = #{sumprice,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paytime != null" >
+        payTime = #{paytime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.guweibit.entity.T_Order" >
+    update t_order
+    set user_id = #{userId,jdbcType=VARCHAR},
+      shop_id = #{shopId,jdbcType=VARCHAR},
+      pay_status = #{payStatus,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
+      pay_type = #{payType,jdbcType=VARCHAR},
+      sumPrice = #{sumprice,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      payTime = #{paytime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 这个方法是我自己加的 -->
+  <select id="orderAll" parameterType="string" resultMap="BaseResultVOMap">
+    SELECT
+    t1.id,t2.shop_name, pay_status, number, pay_type, sumPrice, createDate, payTime
+    FROM t_order t1
+    LEFT JOIN t_shop t2 ON t1.shop_id = t2.id
+    LEFT JOIN t_user t3 ON t1.user_id = t3.user_id
+    <if test='payStatus != null'>
+      WHERE pay_status =#{payStatus} AND t3.user_id = '1'
+    </if>
+    ORDER BY createDate DESC
+  </select>
+</mapper>
