@@ -9,10 +9,10 @@ public class T_OrderVO extends T_Order {
     // 商品名称
     private String shopName;
     // 订单创建时间， 转换时间格式一致有问题，所以将时间定义在VO中为String类型
-    private  String createTimeVo;
+    private String createTimeVo;
 
     // 订单创建时间， 转换时间格式一致有问题，所以将时间定义在VO中为String类型
-    private  String payTimeVo;
+    private String payTimeVo;
 
     public String getCreateTimeVo() {
         return createTimeVo;

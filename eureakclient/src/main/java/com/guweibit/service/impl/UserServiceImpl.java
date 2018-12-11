@@ -11,14 +11,14 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 @Service(value = "userService")
-public class UserServiceImpl implements UserService  {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
     public int addUser(User user) {
-        if (user == null || ObjectUtils.isEmpty(user)){
+        if (user == null || ObjectUtils.isEmpty(user)) {
             return 0;
         }
         return userMapper.insert(user);

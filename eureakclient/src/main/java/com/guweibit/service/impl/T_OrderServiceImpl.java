@@ -29,6 +29,7 @@ public class T_OrderServiceImpl implements T_OrderService {
     public int insert(T_Order record) {
         return orderMapper.insert(record);
     }
+
     @Transient
     @Override
     public int insertSelective(T_Order record) {
@@ -45,21 +46,23 @@ public class T_OrderServiceImpl implements T_OrderService {
     public int updateByPrimaryKeySelective(T_Order record) {
         return orderMapper.updateByPrimaryKeySelective(record);
     }
+
     @Transient
     @Override
     public int updateByPrimaryKey(T_Order record) {
         record.setPaytime(new Date());
         return orderMapper.updateByPrimaryKey(record);
     }
+
     @Override
-    public List<T_OrderVO> orderAll(int pageNum, int pageSize,String payStatus) {
-        PageHelper.startPage(pageNum,pageSize);
+    public List<T_OrderVO> orderAll(int pageNum, int pageSize, String payStatus) {
+        PageHelper.startPage(pageNum, pageSize);
         List<T_OrderVO> list = orderMapper.orderAll(payStatus);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         // 判空
-        if (null != list && list.size()>0) {
+        if (null != list && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 try {
                     if (null != list.get(i).getCreatedate()) {
@@ -68,7 +71,7 @@ public class T_OrderServiceImpl implements T_OrderService {
                     if (null != list.get(i).getPaytime()) {
                         list.get(i).setPayTimeVo(sdf.format(list.get(i).getPaytime()));
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             }

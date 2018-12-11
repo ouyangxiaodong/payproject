@@ -26,7 +26,8 @@
                                 <span slot="title">我的订单</span>
                             </el-menu-item>
                             <el-menu-item index="4">
-                                <el-badge :hidden="messageInfoData.length<=0" :value="messageInfoData.length" class="item">
+                                <el-badge :hidden="messageInfoData.length<=0" :value="messageInfoData.length"
+                                          class="item">
                                     <el-button size="small">消息通知</el-button>
                                 </el-badge>
                                 <!--<span slot="title">消息通知</span>-->
@@ -36,63 +37,65 @@
                 </el-row>
             </el-aside>
             <el-main>
-                <template v-if="tabIndex=='1'" >
-                <el-table
-                    :data="shopData"
-                    style="width: 100%">
-                    <el-table-column
-                            :key="1"
-                            prop="id"
-                            label="编号"
-                            width="180">
-                    </el-table-column>
-                    <el-table-column
-                            prop="shopName"
-                            label="名称"
-                            width="180">
-                    </el-table-column>
-                    <el-table-column
-                            prop="price"
-                            label="价格">
-                    </el-table-column>
-                    <el-table-column label="操作">
-                        <template slot-scope="scope">
-                            <el-button
-                                    size="mini"
-                                    @click="handleBuy(scope.$index, scope.row)">购买</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <el-dialog title="购买" :visible.sync="dialogFormVisible">
-                    <el-form :model="shop">
-                        <el-form-item label="商品名称" :label-width="formLabelWidth">
-                            <el-input v-model="shop.shopName" disabled ></el-input>
-                        </el-form-item>
-                        <el-form-item label="价格" :label-width="formLabelWidth">
-                            <el-input v-model="shop.price" placeholder="0.0" disabled ></el-input>
-                        </el-form-item>
-                        <el-form-item label="数量" :label-width="formLabelWidth">
-                            <template>
-                                <el-input-number v-model="shop.number" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
+                <template v-if="tabIndex=='1'">
+                    <el-table
+                            :data="shopData"
+                            style="width: 100%">
+                        <el-table-column
+                                :key="1"
+                                prop="id"
+                                label="编号"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="shopName"
+                                label="名称"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="price"
+                                label="价格">
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        @click="handleBuy(scope.$index, scope.row)">购买
+                                </el-button>
                             </template>
-                        </el-form-item>
-                        <el-form-item label="支付方式" :label-width="formLabelWidth">
-                            <template>
-                                <el-radio v-model="shop.payType" label="alipay">支付宝</el-radio>
-                                <el-radio v-model="shop.payType" label="wechat">微信</el-radio>
-                            </template>
-                        </el-form-item>
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="initStatus">取 消</el-button>
-                        <el-button type="primary" @click="doPay">付 款</el-button>
-                    </div>
-                    <!-- 路由出口 -->
-                    <!-- 路由匹配到的组件将渲染在这里 -->
-                </el-dialog>
+                        </el-table-column>
+                    </el-table>
+                    <el-dialog title="购买" :visible.sync="dialogFormVisible">
+                        <el-form :model="shop">
+                            <el-form-item label="商品名称" :label-width="formLabelWidth">
+                                <el-input v-model="shop.shopName" disabled></el-input>
+                            </el-form-item>
+                            <el-form-item label="价格" :label-width="formLabelWidth">
+                                <el-input v-model="shop.price" placeholder="0.0" disabled></el-input>
+                            </el-form-item>
+                            <el-form-item label="数量" :label-width="formLabelWidth">
+                                <template>
+                                    <el-input-number v-model="shop.number" @change="handleChange" :min="1" :max="10"
+                                                     label="描述文字"></el-input-number>
+                                </template>
+                            </el-form-item>
+                            <el-form-item label="支付方式" :label-width="formLabelWidth">
+                                <template>
+                                    <el-radio v-model="shop.payType" label="alipay">支付宝</el-radio>
+                                    <el-radio v-model="shop.payType" label="wechat">微信</el-radio>
+                                </template>
+                            </el-form-item>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="initStatus">取 消</el-button>
+                            <el-button type="primary" @click="doPay">付 款</el-button>
+                        </div>
+                        <!-- 路由出口 -->
+                        <!-- 路由匹配到的组件将渲染在这里 -->
+                    </el-dialog>
                 </template>
                 <!-- 订单显示 -->
-                <template v-else-if="tabIndex=='2'" >
+                <template v-else-if="tabIndex=='2'">
                     <el-table
                             :row-class-name="tableRowClassName"
                             :key="2"
@@ -116,9 +119,9 @@
                                 label="支付类型">
                         </el-table-column>
                         <el-table-column
-                            prop="payStatus"
-                            label="支付状态">
-                    </el-table-column>
+                                prop="payStatus"
+                                label="支付状态">
+                        </el-table-column>
                         <el-table-column
                                 prop="createTimeVo"
                                 label="创建时间">
@@ -129,17 +132,17 @@
                         </el-table-column>
                     </el-table>
                 </template>
-                <template v-else="tabIndex=='3'" >
+                <template v-else="tabIndex=='3'">
                     <el-table
                             :row-class-name="tableRowClassName"
                             :key="3"
                             :data="messageInfoData"
                             style="width: 100%">
                         <el-table-column
-                            prop="id"
-                            label="订单编号"
-                            width="180">
-                   </el-table-column>
+                                prop="id"
+                                label="订单编号"
+                                width="180">
+                        </el-table-column>
                         <el-table-column
                                 prop="payTimeVo"
                                 label="总价">
@@ -156,7 +159,8 @@
                             <template slot-scope="scope">
                                 <el-button
                                         size="mini"
-                                        @click="handleEdit(scope.$index, scope.row)">查看消息（消息置为已读）</el-button>
+                                        @click="handleEdit(scope.$index, scope.row)">查看消息（消息置为已读）
+                                </el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -179,9 +183,11 @@
     .el-table .warning-row {
         background: oldlace;
     }
+
     .el-table .success-row {
         background: #f0f9eb;
     }
+
     .el-table .red-row {
         background: #f1cab7;
     }
@@ -210,33 +216,33 @@
                     name: '王小虎',
                     address: '上海市普陀区金沙江路 1516 弄'
                 }],
-                tabIndex:"1", // tab 菜单下标 从1 开始
+                tabIndex: "1", // tab 菜单下标 从1 开始
                 orderData: [],
-                payData:[],
-                shopData:[],
-                price:0.0,
-                shop:{
-                    id:"",
-                    shopName:"",
-                    price:"",
-                    number:1,
-                    payType:"alipay",
+                payData: [],
+                shopData: [],
+                price: 0.0,
+                shop: {
+                    id: "",
+                    shopName: "",
+                    price: "",
+                    number: 1,
+                    payType: "alipay",
                 },
-                order:{
-                      id:"",
-                    shopName:"",
-                    payStatus:"",
-                    number:"",
-                    payType:"",
-                    sumprice:"",
+                order: {
+                    id: "",
+                    shopName: "",
+                    payStatus: "",
+                    number: "",
+                    payType: "",
+                    sumprice: "",
                 },
-                dialogFormVisible:false,
+                dialogFormVisible: false,
                 formLabelWidth: '120px',
-                WIDout_trade_no:"", // 订单号
-                messageInfoData:[], // 消息集合
+                WIDout_trade_no: "", // 订单号
+                messageInfoData: [], // 消息集合
             }
         },
-        mounted(){
+        mounted() {
             var websocket = null;
             var _this = this;
             if ("WebSocket" in window) {
@@ -252,15 +258,15 @@
                 _this.setMessageInnerHTML(event.data);
             };
             websocket.onclose = function () {
-             //   _this.setMessageInnerHTML("close");
+                //   _this.setMessageInnerHTML("close");
                 console.log("断开websocket连接")
             };
             websocket.onbeforeunload = function () {
                 websocket.close();
             };
         },
-        created(){
-            var that  = this;
+        created() {
+            var that = this;
             axios.get('/shop/all/1/10')
                 .then(function (response) {
                     that.shopData = response.data;
@@ -271,63 +277,63 @@
             this.queryData("1");
         },
         methods: {
-      setMessageInnerHTML(message) {
-          console.log(message);
-          if (message != null) {
-              let jsonObj = JSON.parse(message)
-              this.messageInfoData.push(jsonObj)
-              for(var i= 0;i<this.messageInfoData.length;i++){
-                  var item = this.messageInfoData[i];
-                  if (this.messageInfoData[i].payType=="alipay"){
-                      this.messageInfoData[i].payType = "支付宝"
-                  }else if (item.payType=="wechat"){
-                      this.messageInfoData[i].payType = "微信"
-                  }
-                  if (item.payStatus=="0"){
-                      this.messageInfoData[i].payStatus = "待支付"
-                  }else if(item.payStatus=="1"){
-                      response.data[i].payStatus = "已支付"
-                  }else if (item.payStatus=="2") {
-                      this.messageInfoData[i].payStatus = "取消订单"
-                  }
-              }
-          }
-          console.log(this.messageInfoData)
-    },
-    tableRowClassName({row, rowIndex}) {
+            setMessageInnerHTML(message) {
+                console.log(message);
+                if (message != null) {
+                    let jsonObj = JSON.parse(message)
+                    this.messageInfoData.push(jsonObj)
+                    for (var i = 0; i < this.messageInfoData.length; i++) {
+                        var item = this.messageInfoData[i];
+                        if (this.messageInfoData[i].payType == "alipay") {
+                            this.messageInfoData[i].payType = "支付宝"
+                        } else if (item.payType == "wechat") {
+                            this.messageInfoData[i].payType = "微信"
+                        }
+                        if (item.payStatus == "0") {
+                            this.messageInfoData[i].payStatus = "待支付"
+                        } else if (item.payStatus == "1") {
+                            response.data[i].payStatus = "已支付"
+                        } else if (item.payStatus == "2") {
+                            this.messageInfoData[i].payStatus = "取消订单"
+                        }
+                    }
+                }
+                console.log(this.messageInfoData)
+            },
+            tableRowClassName({row, rowIndex}) {
                 if (row.payStatus == "待支付") {
                     return 'warning-row';
                 } else if (row.payStatus == "已支付") {
                     return 'success-row';
                 }
                 return 'red-row';
-        },
-            queryData(tabIndex){
-                var that  = this;
-                if (tabIndex=='1'){
+            },
+            queryData(tabIndex) {
+                var that = this;
+                if (tabIndex == '1') {
                     axios.get('/shop/all/1/10')
-                        .then( response => {
+                        .then(response => {
                             this.shopData = response.data;
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
-                } else if (tabIndex=="2"){
+                } else if (tabIndex == "2") {
                     axios.get('/order/all/1/100')
                         .then(response => {
                             console.log(response)
-                            for(var i= 0;i<response.data.length;i++){
+                            for (var i = 0; i < response.data.length; i++) {
                                 var item = response.data[i];
-                                if (response.data[i].payType=="alipay"){
+                                if (response.data[i].payType == "alipay") {
                                     response.data[i].payType = "支付宝"
-                                }else if (item.payType=="wechat"){
+                                } else if (item.payType == "wechat") {
                                     response.data[i].payType = "微信"
                                 }
-                                if (item.payStatus=="0"){
+                                if (item.payStatus == "0") {
                                     response.data[i].payStatus = "待支付"
-                                }else if(item.payStatus=="1"){
+                                } else if (item.payStatus == "1") {
                                     response.data[i].payStatus = "已支付"
-                                }else if (item.payStatus=="2") {
+                                } else if (item.payStatus == "2") {
                                     response.data[i].payStatus = "取消订单"
                                 }
                             }
@@ -336,10 +342,10 @@
                         .catch(function (error) {
                             console.log(error);
                         });
-                } else{
+                } else {
                 }
             },
-            initStatus(){
+            initStatus() {
                 this.shop.payType = "alipay";
                 return this.dialogFormVisible = false;
             },
@@ -358,51 +364,51 @@
                 sNow += String(vNow.getMinutes());
                 sNow += String(vNow.getSeconds());
                 sNow += String(vNow.getMilliseconds());
-                this.WIDout_trade_no =  sNow;
+                this.WIDout_trade_no = sNow;
                 // 创建订单。
-                 this.addorder();
+                this.addorder();
             },
-            addorder(){
+            addorder() {
                 // 创建一个订单，
                 console.log(this.shop.payType)
 
                 var T_Order = {
-                    id : this.WIDout_trade_no,
-                    userId : "1",
-                    shopId : this.shop.id,
+                    id: this.WIDout_trade_no,
+                    userId: "1",
+                    shopId: this.shop.id,
                     number: "1",
-                    payStatus : "0", //支付状态
-                    payType:this.shop.payType, // 支付方式
-                    sumprice:this.shop.price
-            }
+                    payStatus: "0", //支付状态
+                    payType: this.shop.payType, // 支付方式
+                    sumprice: this.shop.price
+                }
                 axios({
                     method: 'post',
                     url: '/order/articles',
                     data: JSON.stringify(T_Order),
-                    headers:{
-                        'Content-Type':'application/json'
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
                 }).then(function (response) {
                     // 打开新的页面进行填充html。
-                  console.log("新增成功")
+                    console.log("新增成功")
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
             handleChange(value) {
-                this.shop.price = parseFloat(this.price)*value;
+                this.shop.price = parseFloat(this.price) * value;
             },
-            doPay(){
+            doPay() {
                 var _this = this;
                 // 点击付款
                 // 需要进行转换
                 var postData = Qs.stringify({
-                    WIDout_trade_no : _this.WIDout_trade_no,
-                    WIDsubject : "测试支付",
-                    WIDtotal_amount : _this.shop.price+"",
-                    WIDbody : "购物",
-                    number:_this.shop.number,
-                    payType:this.shop.payType
+                    WIDout_trade_no: _this.WIDout_trade_no,
+                    WIDsubject: "测试支付",
+                    WIDtotal_amount: _this.shop.price + "",
+                    WIDbody: "购物",
+                    number: _this.shop.number,
+                    payType: this.shop.payType
                 });
                 axios({
                     method: 'post',
@@ -410,11 +416,11 @@
                     data: postData
                 }).then(function (response) {
                     // 打开新的页面进行填充html。
-                    var newwindow = window.open("#","_blank");
+                    var newwindow = window.open("#", "_blank");
                     newwindow.document.write(response.data);
                 }).catch(function (error) {
-                        console.log(error);
-                    });
+                    console.log(error);
+                });
                 this.initStatus();
             },
             handleOpen(key, keyPath) {
@@ -427,7 +433,7 @@
                 console.log(index, row);
                 // 修改消息状态
                 console.log("修改消息状态")
-                this.messageInfoData.splice(index,1);
+                this.messageInfoData.splice(index, 1);
             },
         }
     })
